@@ -7,7 +7,7 @@
   transition: right 0.3s ease;
   color: #fff;
 
-  @media (hover: none) and (pointer: coarse) {
+  :root[data-ive-mobile] & {
     top: auto;
     bottom: 5vh;
   }

@@ -21,7 +21,7 @@ body {
   font-weight: 400;
   overflow-x: hidden;
 
-  @media (hover: none) and (pointer: coarse) {
+  :root[data-ive-mobile] & {
     width: 100%;
     height: 100vh;
   }

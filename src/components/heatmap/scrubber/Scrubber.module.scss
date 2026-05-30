@@ -20,7 +20,7 @@
     pointer-events: none;
     z-index: 2;
 
-    @media (hover: none) and (pointer: coarse) {
+    :root[data-ive-mobile] & {
       top: 0px;
       padding: 0px 2px;
     }
@@ -71,7 +71,7 @@
       height: 64px;
       background: #fff;
 
-      @media (hover: none) and (pointer: coarse) {
+      :root[data-ive-mobile] & {
         height: 32px;
       }
     }
@@ -83,7 +83,7 @@
       border: none;
       border-radius: 0;
 
-      @media (hover: none) and (pointer: coarse) {
+      :root[data-ive-mobile] & {
         height: 32px;
       }
     }

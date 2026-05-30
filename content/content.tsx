@@ -173,6 +173,10 @@ const handleUrlChange = async () => {
 
 // Initialize everything
 const initialize = () => {
+  if (/Android/i.test(navigator.userAgent)) {
+    document.documentElement.setAttribute('data-ive-mobile', '')
+  }
+
   setupIveBridge()
   setupIveEventApi()
   setupMessageListeners()

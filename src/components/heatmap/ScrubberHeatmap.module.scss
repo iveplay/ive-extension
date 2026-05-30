@@ -6,7 +6,7 @@
   height: 64px;
   z-index: 2147483640;
 
-  @media (hover: none) and (pointer: coarse) {
+  :root[data-ive-mobile] & {
     height: 32px;
   }
 }

@@ -5,6 +5,10 @@ import { PopupApp } from '@/pages/popup/PopupApp'
 import '@mantine/core/styles.css'
 import './global.scss'
 
+if (/Android/i.test(navigator.userAgent)) {
+  document.documentElement.setAttribute('data-ive-mobile', '')
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider forceColorScheme='dark'>
