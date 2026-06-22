@@ -5,6 +5,7 @@ import { FaptapCardHandler } from '@/pages/faptapPanel/FaptapCardHandler'
 import { FaptapPanel } from '@/pages/faptapPanel/FaptapPanel'
 import { FunscripthubPanel } from '@/pages/funscripthubPanel/FunscripthubPanel'
 import { IvdbPanel } from '@/pages/ivdbPanel/IvdbPanel'
+import { PmvhavenHandler } from '@/pages/pmvhavenPanel/PmvhavenHandler'
 import { VideoPage } from '@/pages/videoPage/VideoPage'
 import { IveEntry } from '@/types/ivedb'
 import { findHtmlElement } from '@/utils/findHtmlElement'
@@ -15,6 +16,7 @@ export const SITE_URLS = {
   FAPTAP_DOMAIN: 'faptap.net',
   IVDB: 'ivdb.io/#/videos/',
   FUNSCRIPTHUB: 'funscripthub.com/detail',
+  PMVHAVEN: 'pmvhaven.com/video',
 } as const
 
 export const hasVideoIframes = (): boolean => {
@@ -131,5 +133,11 @@ export const mountVideoPage = (
     position: 'fixed',
     inset: '0',
     pointerEvents: 'none',
+  })
+}
+
+export const mountPmvhavenHandler = (): boolean => {
+  return mountComponent(document.body, <PmvhavenHandler />, 'append', {
+    display: 'none',
   })
 }

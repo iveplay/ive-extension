@@ -8,6 +8,7 @@ import {
   mountFaptapCardHandler,
   mountIvdbPanel,
   mountFunscripthubPanel,
+  mountPmvhavenHandler,
   mountVideoPage,
 } from '@/utils/componentMounting'
 import { setupIveBridge } from '@/utils/iveBridge'
@@ -67,7 +68,8 @@ const setupUrlMonitoring = () => {
       handleUrlChange()
     } else if (
       !mountedComponent &&
-      window.location.href.includes(SITE_URLS.FAPTAP)
+      (window.location.href.includes(SITE_URLS.FAPTAP) ||
+        window.location.href.includes(SITE_URLS.PMVHAVEN))
     ) {
       handleUrlChange()
     }
@@ -112,6 +114,13 @@ const handleUrlChange = async () => {
       const success = await mountFunscripthubPanel()
       if (success) mountedComponent = true
       console.log('IVE: Mounted Funscripthub panel')
+      return
+    }
+
+    if (currentUrl.includes(SITE_URLS.PMVHAVEN)) {
+      const success = mountPmvhavenHandler()
+      if (success) mountedComponent = true
+      console.log('IVE: Mounted PMVHaven handler')
       return
     }
 
