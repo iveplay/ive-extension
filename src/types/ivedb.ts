@@ -48,6 +48,12 @@ export interface CreateIveEntryData {
   defaultScriptId?: string
 }
 
+export interface IveEntryWithDetails {
+  entry: IveEntry
+  videoSources: VideoSource[]
+  scripts: ScriptMetadata[]
+}
+
 export interface IveSearchOptions {
   query?: string
   tags?: string[]

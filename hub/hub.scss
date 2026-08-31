@@ -1,0 +1,85 @@
+@font-face {
+  font-family: 'Frankfurter Highlight';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/frankfurter-highlight-std.otf') format('opentype');
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body,
+#root {
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --font-frankfurter: 'Frankfurter Highlight', sans-serif;
+}
+
+.box {
+  padding: 16px;
+  border-radius: 16px;
+  background-color: var(--mantine-color-dark-6);
+
+  &.w {
+    width: 100%;
+  }
+
+  &.h {
+    height: 100%;
+  }
+}
+
+.menuItem {
+  border-radius: 16px;
+  text-decoration: none;
+
+  &:hover,
+  &.active {
+    background-color: var(--mantine-color-dark-4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:hover .hoverText {
+    display: block;
+  }
+
+  .hoverText {
+    display: none;
+  }
+}
+
+.menuItemIcon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--mantine-color-text);
+}
+
+.mantine-Pill-root {
+  background: var(--mantine-color-body);
+}
+
+.hubNotification {
+  position: fixed;
+  z-index: 1000;
+  right: 16px;
+  bottom: 16px;
+  width: min(400px, calc(100vw - 32px));
+  background-color: var(--mantine-color-dark-5);
+}
+
+@media (max-width: 47.99em) {
+  .hub-navbar {
+    --app-shell-navbar-width: 280px;
+  }
+}

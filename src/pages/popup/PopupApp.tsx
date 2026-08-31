@@ -1,4 +1,4 @@
-import { Burger, Drawer, ScrollArea, Text } from '@mantine/core'
+import { Burger, Button, Drawer, ScrollArea, Text } from '@mantine/core'
 import clsx from 'clsx'
 import { ReactNode, useState, useEffect } from 'react'
 import { useShallow } from 'zustand/shallow'
@@ -101,17 +101,15 @@ export const PopupApp = () => {
           className={styles.burger}
         />
         <Text className={styles.title}>{currentItem.label}</Text>
-        <a
-          href={
-            process.env.NODE_ENV === 'development'
-              ? 'http://localhost:3000/hub'
-              : 'https://iveplay.io/hub'
-          }
-          target='_blank'
+        <Button
+          onClick={() => {
+            void chrome.runtime.openOptionsPage()
+            window.close()
+          }}
           className={clsx('button primary', styles.hubButton)}
         >
           Hub
-        </a>
+        </Button>
       </header>
 
       <Drawer

@@ -31,5 +31,5 @@
       "@content/*": ["./content/*"]
     }
   },
-  "include": ["popup", "background", "content", "src", "vite.config.ts"]
+  "include": ["popup", "hub", "background", "content", "src", "vite.config.ts"]
 }

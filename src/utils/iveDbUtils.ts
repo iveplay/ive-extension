@@ -2,17 +2,32 @@ import { MESSAGES } from '@background/types'
 import {
   CreateIveEntryData,
   IveEntry,
+  IveEntryWithDetails,
   IveSearchOptions,
-  VideoSource,
-  ScriptMetadata,
 } from '@/types/ivedb'
+
+const sendIveDbMessage = async <T>(
+  message: Record<string, unknown>,
+): Promise<T> => {
+  const response: unknown = await chrome.runtime.sendMessage(message)
+
+  if (
+    response !== null &&
+    typeof response === 'object' &&
+    'error' in response
+  ) {
+    throw new Error(String(response.error))
+  }
+
+  return response as T
+}
 
 export const ping = async (): Promise<{
   available: boolean
   version: string
 }> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_PING,
     })
   } catch (error) {
@@ -27,7 +42,7 @@ export const getEntriesPaginated = async (
   options: IveSearchOptions = {},
 ): Promise<IveEntry[]> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_GET_ENTRIES_PAGINATED,
       offset,
       limit,
@@ -41,7 +56,7 @@ export const getEntriesPaginated = async (
 
 export const getEntry = async (entryId: string): Promise<IveEntry | null> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_GET_ENTRY,
       entryId,
     })
@@ -53,13 +68,9 @@ export const getEntry = async (entryId: string): Promise<IveEntry | null> => {
 
 export const getEntryWithDetails = async (
   entryId: string,
-): Promise<{
-  entry: IveEntry
-  videoSources: VideoSource[]
-  scripts: ScriptMetadata[]
-} | null> => {
+): Promise<IveEntryWithDetails | null> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_GET_ENTRY_WITH_DETAILS,
       entryId,
     })
@@ -74,7 +85,7 @@ export const createEntry = async (
   data: CreateIveEntryData,
 ): Promise<string> => {
   try {
-    const entryId = await chrome.runtime.sendMessage({
+    const entryId = await sendIveDbMessage<string>({
       type: MESSAGES.IVEDB_CREATE_ENTRY,
       data,
     })
@@ -87,7 +98,7 @@ export const createEntry = async (
 
 export const getAllEntries = async (): Promise<IveEntry[]> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_GET_ALL_ENTRIES,
     })
   } catch (error) {
@@ -100,7 +111,7 @@ export const searchEntries = async (
   options: IveSearchOptions = {},
 ): Promise<IveEntry[]> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_SEARCH_ENTRIES,
       options,
     })
@@ -115,7 +126,7 @@ export const updateEntry = async (
   data: CreateIveEntryData,
 ): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendIveDbMessage<void>({
       type: MESSAGES.IVEDB_UPDATE_ENTRY,
       entryId,
       data,
@@ -128,7 +139,7 @@ export const updateEntry = async (
 
 export const deleteEntry = async (entryId: string): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendIveDbMessage<void>({
       type: MESSAGES.IVEDB_DELETE_ENTRY,
       entryId,
     })
@@ -140,7 +151,7 @@ export const deleteEntry = async (entryId: string): Promise<void> => {
 
 export const addToFavorites = async (entryId: string): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendIveDbMessage<void>({
       type: MESSAGES.IVEDB_ADD_FAVORITE,
       entryId,
     })
@@ -152,7 +163,7 @@ export const addToFavorites = async (entryId: string): Promise<void> => {
 
 export const removeFromFavorites = async (entryId: string): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendIveDbMessage<void>({
       type: MESSAGES.IVEDB_REMOVE_FAVORITE,
       entryId,
     })
@@ -164,7 +175,7 @@ export const removeFromFavorites = async (entryId: string): Promise<void> => {
 
 export const getFavorites = async (): Promise<IveEntry[]> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_GET_FAVORITES,
     })
   } catch (error) {
@@ -175,7 +186,7 @@ export const getFavorites = async (): Promise<IveEntry[]> => {
 
 export const isFavorited = async (entryId: string): Promise<boolean> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_IS_FAVORITED,
       entryId,
     })
@@ -189,7 +200,7 @@ export const findEntryByVideoUrl = async (
   url: string,
 ): Promise<IveEntry | null> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_FIND_BY_VIDEO_URL,
       url,
     })
@@ -203,7 +214,7 @@ export const findEntryByScriptUrl = async (
   url: string,
 ): Promise<IveEntry | null> => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_FIND_BY_SCRIPT_URL,
       url,
     })
@@ -217,7 +228,7 @@ export const getVideoLookups = async (): Promise<
   { url: string; entryId: string }[]
 > => {
   try {
-    return await chrome.runtime.sendMessage({
+    return await sendIveDbMessage({
       type: MESSAGES.IVEDB_GET_VIDEO_LOOKUPS,
     })
   } catch (error) {

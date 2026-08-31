@@ -1,0 +1,17 @@
+.optionSelector {
+  padding-block: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.optionDropdown {
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(41, 11, 29, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+.optionItem:hover {
+  border-radius: 6px;
+  background-color: rgba(123, 2, 77, 0.6);
+}
