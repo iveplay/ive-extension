@@ -5,8 +5,10 @@ import { VideoPage } from '@/pages/videoPage/VideoPage'
 import { createEntry, getEntry } from '@/utils/iveDbUtils'
 import {
   extractPmvhavenMetadata,
+  isScriptAvailable,
   parseIsoDuration,
 } from '@/utils/pmvhavenUtils'
+import { findMatchingEntry } from '@/utils/urlMatching'
 
 const showVideoPage = async (entryId: string) => {
   const entry = await getEntry(entryId)
@@ -31,12 +33,26 @@ export const usePmvhavenScriptButtons = () => {
 
     const processedLinks = new Set<Element>()
 
+    // Opened from the hub (or revisited): show the player for the saved entry.
+    // Older entries saved the HLS manifest instead of the page, so try that too.
+    const openSavedEntry = async () => {
+      const { contentUrl } = extractPmvhavenMetadata()
+      const entry =
+        (await findMatchingEntry(
+          window.location.origin + window.location.pathname,
+        )) || (contentUrl ? await findMatchingEntry(contentUrl) : undefined)
+      if (entry) await showVideoPage(entry.id)
+    }
+    openSavedEntry().catch((err) =>
+      console.error('IVE: Error opening saved PMVHaven entry:', err),
+    )
+
     const addButtonsToScripts = () => {
       const downloadLinks = document.querySelectorAll<HTMLAnchorElement>(
         'a[href*="funscripts"][title="Download FunScript"]',
       )
 
-      downloadLinks.forEach((link) => {
+      downloadLinks.forEach(async (link) => {
         const container = link.parentElement
         if (!container) return
 
@@ -45,8 +61,10 @@ export const usePmvhavenScriptButtons = () => {
           container.querySelector('[data-ive-pmvhaven-button]')
         )
           return
+        processedLinks.add(link)
 
         const scriptUrl = link.href
+        if (!(await isScriptAvailable(scriptUrl))) return
         const downloadAttr = link.getAttribute('download') || ''
         const scriptName =
           downloadAttr.replace(/\.funscript$/i, '') || 'pmvhaven_script'
@@ -116,7 +134,14 @@ export const usePmvhavenScriptButtons = () => {
               tags: ['pmvhaven'],
               thumbnail: metadata.thumbnailUrl,
               duration,
-              videoSources: [{ url: metadata.contentUrl, status: 'working' }],
+              // The page, not contentUrl: that is an HLS manifest
+              // (master.m3u8), which the hub can't open in a tab.
+              videoSources: [
+                {
+                  url: window.location.origin + window.location.pathname,
+                  status: 'working',
+                },
+              ],
               scripts: [
                 {
                   url: scriptUrl,
@@ -159,7 +184,6 @@ export const usePmvhavenScriptButtons = () => {
         })
 
         container.appendChild(button)
-        processedLinks.add(link)
       })
     }
 

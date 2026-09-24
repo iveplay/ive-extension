@@ -21,7 +21,7 @@ const firefoxManifest = {
   ...chromeManifest,
   content_security_policy: {
     extension_pages:
-      "default-src 'self'; connect-src 'self' ws://0.0.0.0:* ws://localhost:* https://*; style-src 'self' 'unsafe-inline'",
+      "default-src 'self'; connect-src 'self' ws://0.0.0.0:* ws://localhost:* https://*; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: https:",
   },
   background: {
     scripts: [chromeManifest.background.service_worker],

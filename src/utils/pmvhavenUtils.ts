@@ -37,3 +37,18 @@ export const parseIsoDuration = (duration: string): number => {
   const seconds = parseFloat(match[3] || '0')
   return (hours * 3600 + minutes * 60 + seconds) * 1000
 }
+
+// Some scripts listed on PMVHaven point at files their bucket refuses to serve
+// (403 AccessDenied). Probe each one once so only working ones get a button.
+const availability = new Map<string, Promise<boolean>>()
+
+export const isScriptAvailable = (url: string): Promise<boolean> => {
+  let result = availability.get(url)
+  if (!result) {
+    result = fetch(url, { method: 'HEAD', cache: 'no-store' })
+      .then((res) => res.ok)
+      .catch(() => false)
+    availability.set(url, result)
+  }
+  return result
+}

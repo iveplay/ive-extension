@@ -53,8 +53,18 @@ export const Video = ({ details, setEditor, notify }: VideoProps) => {
       return
     }
 
+    // A tab can't play an HLS manifest (it downloads it). Older PMVHaven
+    // entries saved one, so open the page the script came from instead.
+    const supportUrl = scripts.find(
+      (s) => s.id === selectedScriptId,
+    )?.supportUrl
+    const videoUrl =
+      /\.m3u8(\?|$)/i.test(selectedVideoUrl) && supportUrl
+        ? supportUrl
+        : selectedVideoUrl
+
     try {
-      await openVideoWithScript(selectedVideoUrl, selectedScriptId)
+      await openVideoWithScript(videoUrl, selectedScriptId)
     } catch (error) {
       notify(
         error instanceof Error ? error.message : 'Could not open the video',
