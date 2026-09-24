@@ -41,6 +41,11 @@ const setupMessageListeners = () => {
 }
 
 const handleFloatVideoMessage = () => {
+  // Site handlers (PMVHaven, Faptap cards) hold #ive as a hidden div with no
+  // player, so swap it for the video page. Their observers keep running.
+  const existing = document.getElementById('ive')
+  if (existing?.style.display === 'none') existing.remove()
+
   // Mount component if needed
   if (!document.getElementById('ive')) {
     mountedComponent = false
