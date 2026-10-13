@@ -99,7 +99,7 @@ export const mountFaptapCardHandler = (): boolean => {
 }
 
 export const mountIvdbPanel = async (): Promise<boolean> => {
-  const container = await findHtmlElement('#handy-ui')
+  const container = await findHtmlElement('.video-page__actions')
   if (!container) return false
 
   return mountComponent(container, <IvdbPanel />, 'prepend', {

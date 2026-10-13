@@ -41,6 +41,7 @@ export type ImportData = {
       duration?: number
       thumbnail?: string
       tags?: string[]
+      createdAt?: number
       defaultScriptId?: string
     }
     videoSources: Array<Pick<VideoSource, 'url' | 'status'>>

@@ -41,7 +41,13 @@ export const ImportButton = ({
       let imported = 0
       let failed = 0
 
-      for (const item of data.entries) {
+      // Entries are stamped with the import time and listed newest first, so
+      // create the oldest first to keep the backup's order.
+      const items = [...data.entries].sort(
+        (a, b) => (a.entry?.createdAt ?? 0) - (b.entry?.createdAt ?? 0),
+      )
+
+      for (const item of items) {
         try {
           if (
             !item.entry?.title ||
