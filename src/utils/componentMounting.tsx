@@ -82,13 +82,15 @@ export const mountEroscriptPanel = async (): Promise<boolean> => {
 
 export const mountFaptapPanel = async (): Promise<boolean> => {
   const container = await findHtmlElement(
-    '#app > div > div.py-2.lg\\:py-8.lg\\:px-8.flex-1.flex.flex-col.relative > div.flex-1 > div.text-white.flex.flex-col.gap-y-2.mt-3.px-2.md\\:px-0 > div.flex.flex-col-reverse.lg\\:flex-row.lg\\:items-center.justify-between.gap-y-2 > div.relative.-mx-2.lg\\:mx-0 > div > div',
+    '#app .flex-col-reverse.justify-between > .scroller-wrapper .scroller-content',
   )
 
   if (!container) return false
 
   return mountComponent(container, <FaptapPanel />, 'prepend', {
     position: 'relative',
+    alignSelf: 'stretch',
+    flexShrink: '0',
   })
 }
 

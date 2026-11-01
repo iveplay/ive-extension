@@ -14,7 +14,7 @@ type FaptapVideoResponse = {
       }
     }
     tags: { id: string; name: string; slug: string }[]
-    stream_url: string
+    stream_url?: string
     stream_url_selfhosted?: string
     script?: {
       url?: string
@@ -22,6 +22,31 @@ type FaptapVideoResponse = {
       total_actions?: number
     }
   }
+}
+
+// faptap's video CDN (the player's "EXT Server"). Every video lives under its
+// id here, with a plain MP4 per resolution.
+const FAPTAP_CDN = 'https://vz-3d77bc0a-a87.b-cdn.net'
+const FAPTAP_CDN_RESOLUTIONS = ['1080p', '720p', '480p', '360p', '240p']
+
+// Not every resolution exists, so check each
+const getCdnSources = async (
+  cdnId: string,
+): Promise<CreateIveEntryData['videoSources']> => {
+  const urls = FAPTAP_CDN_RESOLUTIONS.map(
+    (resolution) => `${FAPTAP_CDN}/${cdnId}/play_${resolution}.mp4`,
+  )
+  const exists = await Promise.all(
+    urls.map((url) =>
+      fetch(url, { headers: { Range: 'bytes=0-0' } })
+        .then((response) => response.ok)
+        .catch(() => false),
+    ),
+  )
+
+  return urls
+    .filter((_, index) => exists[index])
+    .map((url) => ({ url, status: 'working' }))
 }
 
 export const loadFaptapScript = async (videoId: string): Promise<void> => {
@@ -41,14 +66,17 @@ export const loadFaptapScript = async (videoId: string): Promise<void> => {
   const sources: CreateIveEntryData['videoSources'] = []
 
   // Prefer self-hosted URL if available faptap does this if video isn't available
-  if (
-    data.stream_url_selfhosted &&
-    !data.stream_url_selfhosted.includes('faptap')
-  ) {
-    sources.push({ url: data.stream_url_selfhosted, status: 'working' })
+  const selfhosted = data.stream_url_selfhosted
+  if (selfhosted?.startsWith('http')) {
+    if (!selfhosted.includes('faptap')) {
+      sources.push({ url: selfhosted, status: 'working' })
+    }
+  } else if (selfhosted) {
+    // Now usually a bare id on their video CDN
+    sources.push(...(await getCdnSources(selfhosted)))
   }
 
-  if (data.stream_url) {
+  if (data.stream_url?.startsWith('http')) {
     sources.push({ url: data.stream_url, status: 'working' })
   }
 
